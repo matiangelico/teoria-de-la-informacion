@@ -1,6 +1,9 @@
 package modelo;
 
+import java.util.HashMap;
+
 public class Model {
+
     public static double[][] generarMatrizProbabilidades(String datos, int n) {
         double[][] prob = new double[n][n];
         int t, q;
@@ -21,9 +24,17 @@ public class Model {
 
     public static int caracterAindice(char a) {
         int indice = -1;
-        if (a == 'A') indice = 0;
-        if (a == 'B') indice = 1;
-        if (a == 'C') indice = 2;
+        switch (a) {
+            case ('A'):
+                indice = 0;
+                break;
+            case ('B'):
+                indice = 1;
+                break;
+            case ('C'):
+                indice = 2;
+                break;
+        }
         return indice;
     }
 
@@ -67,9 +78,7 @@ public class Model {
         return ergodica;
     }
 
-    public static int cantidadSimbolos(String datos) {
-        return 3;
-    }
+    public static int cantidadSimbolos(String datos) {return 3;}
 
     public static double[][] restaMatrices(double[][] matrizProbabilidades, int n) {
         int i,j;
