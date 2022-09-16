@@ -13,19 +13,16 @@ public class Model {
 
     public static double[][] generarMatrizProbabilidades(String datos) {
         double[][] prob = new double[n][n];
-        int t, q;
+        int i, j, pos;
         int[] totales = new int[n];
-        for (t = 2; t < datos.length(); t++)
-            prob[caracterAindice(datos.charAt(t))][caracterAindice(datos.charAt(t - 1))] += 1;
-
-        for (t = 0; t < 3; t++) {
-            totales[t] = (int) (prob[0][t] + prob[1][t] + prob[2][t]);
+        for (i = 1; i < datos.length(); i++) {
+            pos = caracterAindice(datos.charAt(i));
+            prob[pos][caracterAindice(datos.charAt(i - 1))] += 1;
+            totales[pos] +=1;
         }
-
-        for (t = 0; t < 3; t++)
-            for (q = 0; q < 3; q++)
-                prob[q][t] /= totales[q];
-
+        for (i = 0; i < 3; i++)
+            for (j = 0; j < 3; j++)
+                prob[i][j] /= totales[i];
         return prob;
     }
 
@@ -51,9 +48,9 @@ public class Model {
         for (f = 0; f < n; f++)
             for (c = 0; c < n; c++) {
                 if (f == c)
-                    matrizI[f][c] = 1;
+                    matrizI[f][c] = 1.;
                 else
-                    matrizI[f][c] = 0;
+                    matrizI[f][c] = 0.;
             }
         return matrizI;
     }
@@ -150,10 +147,8 @@ public class Model {
         for (f = 0; f < n; f++)
             for (c = 0; c < n; c++)
                 mAmpliada[f][c] = matriz[f][c];
-        //for (f = 0; f < n; f++)
-        mAmpliada[0][n]=0.;
-        mAmpliada[1][n]=0.;
-        mAmpliada[2][n]=0.;
+        for (f = 0; f < n; f++)
+            mAmpliada[f][n]=0.;
         return mAmpliada;
     }
 
@@ -170,7 +165,6 @@ public class Model {
         }
         return vectorEstacionario;
     }
-
 
     public static void mostrarVector(double[] vectorEstacionario) {
         int t;

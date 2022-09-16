@@ -29,7 +29,6 @@ public class Main {
         System.out.println();
         System.out.println("Vector Estacionario");
         vectorEstacionario = Model.calcularVector(matrizProbabilidades);
-
         Model.mostrarVector(vectorEstacionario);
     }
 }
