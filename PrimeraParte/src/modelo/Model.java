@@ -1,14 +1,13 @@
 package modelo;
 
+import java.util.*;
+
 public class Model {
-    public static int n;
+    private static int n;
+    private static TreeMap<Character,Integer> h = new TreeMap<>();
 
-    public static void setN(int n) {
+    private static void setN(int n) {
         Model.n = n;
-    }
-
-    public static int getN() {
-        return n;
     }
 
     public static double[][] generarMatrizProbabilidades(String datos) {
@@ -16,30 +15,14 @@ public class Model {
         int i, j, pos;
         int[] totales = new int[n];
         for (i = 1; i < datos.length(); i++) {
-            pos = caracterAindice(datos.charAt(i));
-            prob[pos][caracterAindice(datos.charAt(i - 1))] += 1;
+            pos = h.get(datos.charAt(i));
+            prob[pos][h.get(datos.charAt(i-1))] += 1;
             totales[pos] +=1;
         }
         for (i = 0; i < 3; i++)
             for (j = 0; j < 3; j++)
                 prob[i][j] /= totales[i];
         return prob;
-    }
-
-    public static int caracterAindice(char a) {
-        int indice = -1;
-        switch (a) {
-            case ('A'):
-                indice = 0;
-                break;
-            case ('B'):
-                indice = 1;
-                break;
-            case ('C'):
-                indice = 2;
-                break;
-        }
-        return indice;
     }
 
     public static double[][] generarMatrizIdentidad() {
@@ -56,8 +39,16 @@ public class Model {
     }
 
     public static void mostrarMatriz(double[][] matriz) {
-        int f, c;
+        int f=0, c;
+        char [] llaves = new char[n];
+        for (Map.Entry<Character,Integer> entry : h.entrySet()) {
+            System.out.format("       %c    ", entry.getKey());
+            llaves[f] = entry.getKey();
+            f +=1;
+        }
+        System.out.println();
         for (f = 0; f < n; f++) {
+            System.out.format("%c  ", llaves[f]);
             for (c = 0; c < n; c++) {
                 System.out.format(" %f  ", matriz[f][c]);
             }
@@ -82,7 +73,15 @@ public class Model {
         return ergodica;
     }
 
-    public static int cantidadSimbolos(String datos) {return 3;}
+    public static void generaHashSimbolos(String datos) {
+        int t,c=0;
+        for (t = 0; t <datos.length(); t++)
+            if (!(h.containsKey(datos.charAt(t)))) {
+                h.put(datos.charAt(t), c);
+                c += 1;
+            }
+        Model.setN(h.size());
+    }
 
     public static double[][] restaMatrices(double[][] matrizProbabilidades) {
         int i,j;
@@ -107,9 +106,8 @@ public class Model {
 
     public static double[][] imponerCondicion (double[][]matriz){
         int t;
-        for (t = 0; t<= n; t++){
+        for (t = 0; t<= n; t++)
             matriz[n-1][t] = 1.;
-        }
         return matriz;
     }
 
@@ -170,5 +168,22 @@ public class Model {
         int t;
         for (t = 0; t<n;t++)
             System.out.format("%f  ",vectorEstacionario[t]);
+    }
+
+    public static double calcularEntropia(double[][]matrizProbabilidades, double[]vectorEstacionario){
+        int i,j;
+        double entropia = 0., suma, log2;
+        for(i = 0; i < n; i++){
+            suma = 0.;
+            for (j = 0; j < n; j++){
+                if (matrizProbabilidades[j][i] != 0)
+                    log2 = Math.log(1/matrizProbabilidades[j][i])/Math.log(2);
+                else
+                    log2 = 0.;
+                suma += matrizProbabilidades[j][i]*log2;
+            }
+            entropia += (vectorEstacionario[i]*suma);
+        }
+        return entropia;
     }
 }
