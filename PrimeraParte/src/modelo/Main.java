@@ -4,40 +4,33 @@ import java.io.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
+
         double[][] matrizProbabilidades;
         double[] vectorEstacionario;
-        int n;
         String fileName, datos;
-        fileName= "DatosTP1.txt";
-        File url = new File (fileName);
+        fileName = "DatosTP1.txt";
+        File url = new File(fileName);
         BufferedReader archivo = new BufferedReader(new FileReader(url));
         datos = archivo.readLine();
-        n = Model.cantidadSimbolos(datos) ;
-        matrizProbabilidades = Model.generarMatrizProbabilidades(datos,n);
+        Model.setN(Model.cantidadSimbolos(datos));
+        matrizProbabilidades = Model.generarMatrizProbabilidades(datos);
 
-        double [][] m = new double[3][3];
-        m[0][0]=0.2;m[0][1]=0.2;m[0][2]=0.2;
-        m[1][0]=0.4;m[1][1]=0.4;m[1][2]=0.4;
-        m[2][0]=0.4;m[2][1]=0.4;m[2][2]=0.4;
+        double[][] m = new double[Model.getN()][Model.getN()];
+        m[0][0] = 0.2;m[0][1] = 0.2;m[0][2] = 0.2;
+        m[1][0] = 0.4;m[1][1] = 0.4;m[1][2] = 0.4;
+        m[2][0] = 0.4;m[2][1] = 0.4;m[2][2] = 0.4;
 
-        System.out.println("Memoria No Nula " + Model.memoriaNoNula(m,n));
-        Model.mostrarMatriz(m,n);//matrizProbabilidades,n);
+        System.out.println("Matriz de Probabilidades");
+        Model.mostrarMatriz(matrizProbabilidades);
+        System.out.println();
+        System.out.println("Memoria No Nula :" + Model.memoriaNoNula(m));
+        System.out.println();
+        System.out.format("Ergodica : %b \n",Model.ergodica(matrizProbabilidades));
+        System.out.println();
+        System.out.println("Vector Estacionario");
+        vectorEstacionario = Model.calcularVector(matrizProbabilidades);
 
-        //System.out.format("Ergodica : %b \n",Model.ergodica(matrizProbabilidades,n));
-
-        vectorEstacionario = Model.calcularVector(m,n);//matrizProbabilidades,n);
-
-        Model.mostrarVector(vectorEstacionario,n);
+        Model.mostrarVector(vectorEstacionario);
     }
-
-    //Matriz de Prueba
-        /*
-        double [][] matriz = new double[3][3];
-        double[][] MI;
-        MI = Model.generarMatrizIdentidad(3);
-        matriz[0][0] = 7.3;matriz[0][1] = 0.;matriz[0][2] = 0.;
-        matriz[1][0] = 0.;matriz[1][1] = 0.;matriz[1][2] = 0.;
-        matriz[2][0] = 0.;matriz[2][1] = 0.;matriz[2][2] = 0.;
-        */
 }
 

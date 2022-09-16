@@ -1,10 +1,17 @@
 package modelo;
 
-import java.util.HashMap;
-
 public class Model {
+    public static int n;
 
-    public static double[][] generarMatrizProbabilidades(String datos, int n) {
+    public static void setN(int n) {
+        Model.n = n;
+    }
+
+    public static int getN() {
+        return n;
+    }
+
+    public static double[][] generarMatrizProbabilidades(String datos) {
         double[][] prob = new double[n][n];
         int t, q;
         int[] totales = new int[n];
@@ -38,11 +45,11 @@ public class Model {
         return indice;
     }
 
-    public static double[][] generarMatrizIdentidad(int a) {
-        double[][] matrizI = new double[a][a];
+    public static double[][] generarMatrizIdentidad() {
+        double[][] matrizI = new double[n][n];
         int f, c;
-        for (f = 0; f < a; f++)
-            for (c = 0; c < a; c++) {
+        for (f = 0; f < n; f++)
+            for (c = 0; c < n; c++) {
                 if (f == c)
                     matrizI[f][c] = 1;
                 else
@@ -51,7 +58,7 @@ public class Model {
         return matrizI;
     }
 
-    public static void mostrarMatriz(double[][] matriz, int n) {
+    public static void mostrarMatriz(double[][] matriz) {
         int f, c;
         for (f = 0; f < n; f++) {
             for (c = 0; c < n; c++) {
@@ -61,7 +68,7 @@ public class Model {
         }
     }
 
-    public static boolean ergodica(double[][] matriz, int n) {
+    public static boolean ergodica(double[][] matriz) {
         int f, c = 0;
         double suma;
         boolean ergodica = true;
@@ -80,28 +87,28 @@ public class Model {
 
     public static int cantidadSimbolos(String datos) {return 3;}
 
-    public static double[][] restaMatrices(double[][] matrizProbabilidades, int n) {
+    public static double[][] restaMatrices(double[][] matrizProbabilidades) {
         int i,j;
         double[][] restaMatrices = new double[n][n];
-        double[][] matrizIdentidad = generarMatrizIdentidad(n);
+        double[][] matrizIdentidad = generarMatrizIdentidad();
         for (i = 0; i < n; i++)
             for (j = 0; j < n; j++)
                 restaMatrices[i][j] = matrizProbabilidades[i][j] - matrizIdentidad [i][j];
         return restaMatrices;
     }
 
-    public static double[] calcularVector (double[][] matriz, int n){
+    public static double[] calcularVector (double[][] matriz){
         double[] vectorEstacionario;
-        double[][] restaMatrices = restaMatrices(matriz,n);
-        double[][] matrizAmpliada = creaMatrizAmpliada(restaMatrices,n);
-        matrizAmpliada = triangulacionGauss(matrizAmpliada,n);
-        matrizAmpliada = imponerCondicion (matrizAmpliada,n);
-        matrizAmpliada = triangulacionGauss(matrizAmpliada,n);
-        vectorEstacionario = sustitucionRegresiva(matrizAmpliada,n);
+        double[][] restaMatrices = restaMatrices(matriz);
+        double[][] matrizAmpliada = creaMatrizAmpliada(restaMatrices);
+        matrizAmpliada = triangulacionGauss(matrizAmpliada);
+        matrizAmpliada = imponerCondicion (matrizAmpliada);
+        matrizAmpliada = triangulacionGauss(matrizAmpliada);
+        vectorEstacionario = sustitucionRegresiva(matrizAmpliada);
         return vectorEstacionario;
     }
 
-    public static double[][] imponerCondicion (double[][]matriz, int n){
+    public static double[][] imponerCondicion (double[][]matriz){
         int t;
         for (t = 0; t<= n; t++){
             matriz[n-1][t] = 1.;
@@ -109,7 +116,7 @@ public class Model {
         return matriz;
     }
 
-    public static boolean memoriaNoNula (double[][] matriz, int n){
+    public static boolean memoriaNoNula (double[][] matriz){
         boolean filaIguales = false;
         int f = 0,c = 0;
         while (f<n && !filaIguales){
@@ -122,7 +129,7 @@ public class Model {
         }
         return filaIguales;
     }
-    public static double[][] triangulacionGauss(double[][] matrizAmpliada, int n) {
+    public static double[][] triangulacionGauss(double[][] matrizAmpliada) {
         int i, j, t, r;
         for (i = 0; i < n; i++) {
             for (t = i + 1; t < n + 1 ; t++)
@@ -137,7 +144,7 @@ public class Model {
         return matrizAmpliada;
     }
 
-    private static double[][] creaMatrizAmpliada(double[][] matriz, int n){
+    private static double[][] creaMatrizAmpliada(double[][] matriz){
         int f,c;
         double[][] mAmpliada = new double[n][n+1];
         for (f = 0; f < n; f++)
@@ -150,7 +157,7 @@ public class Model {
         return mAmpliada;
     }
 
-    private static double[] sustitucionRegresiva(double[][] matrizAmpliada, int n){
+    private static double[] sustitucionRegresiva(double[][] matrizAmpliada){
         double suma;
         int f,c;
         double[] vectorEstacionario = new double[n];
@@ -165,10 +172,9 @@ public class Model {
     }
 
 
-    public static void mostrarVector(double[] vectorEstacionario, int n) {
+    public static void mostrarVector(double[] vectorEstacionario) {
         int t;
         for (t = 0; t<n;t++)
             System.out.format("%f  ",vectorEstacionario[t]);
-
     }
 }
