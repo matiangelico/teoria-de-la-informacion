@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Model {
     private static int n;
-    private static TreeMap<Character,Integer> h = new TreeMap<>();
+    private static final TreeMap<Character,Integer> simbolos = new TreeMap<>();
 
     private static void setN(int n) {
         Model.n = n;
@@ -12,20 +12,21 @@ public class Model {
 
     public static double[][] generarMatrizProbabilidades(String datos) {
         double[][] prob = new double[n][n];
-        int i, j, pos;
+        int i, j, fila, columna;
         int[] totales = new int[n];
         for (i = 1; i < datos.length(); i++) {
-            pos = h.get(datos.charAt(i));
-            prob[pos][h.get(datos.charAt(i-1))] += 1;
-            totales[pos] +=1;
+            columna = simbolos.get(datos.charAt(i));
+            fila = simbolos.get(datos.charAt(i-1));
+            prob[fila][columna] += 1;
+            totales[columna] +=1;
         }
         for (i = 0; i < 3; i++)
             for (j = 0; j < 3; j++)
-                prob[i][j] /= totales[i];
+                prob[i][j] /= totales[j];
         return prob;
     }
 
-    public static double[][] generarMatrizIdentidad() {
+    private static double[][] generarMatrizIdentidad() {
         double[][] matrizI = new double[n][n];
         int f, c;
         for (f = 0; f < n; f++)
@@ -41,7 +42,7 @@ public class Model {
     public static void mostrarMatriz(double[][] matriz) {
         int f=0, c;
         char [] llaves = new char[n];
-        for (Map.Entry<Character,Integer> entry : h.entrySet()) {
+        for (Map.Entry<Character,Integer> entry : simbolos.entrySet()) {
             System.out.format("       %c    ", entry.getKey());
             llaves[f] = entry.getKey();
             f +=1;
@@ -62,10 +63,9 @@ public class Model {
         boolean ergodica = true;
         while (ergodica && c < n) {
             suma = 0;
-            for (f = 0; f < n; f++) {
+            for (f = 0; f < n; f++)
                 if (f != c)
                     suma += matriz[f][c];
-            }
             if (suma == 0)
                 ergodica = false;
             c += 1;
@@ -75,12 +75,15 @@ public class Model {
 
     public static void generaHashSimbolos(String datos) {
         int t,c=0;
-        for (t = 0; t <datos.length(); t++)
-            if (!(h.containsKey(datos.charAt(t)))) {
-                h.put(datos.charAt(t), c);
+        char letra;
+        for (t = 1; t <datos.length(); t++) {
+            letra = datos.charAt(t);
+            if (!(simbolos.containsKey(letra))) {
+                simbolos.put(letra, c);
                 c += 1;
             }
-        Model.setN(h.size());
+        }
+        Model.setN(simbolos.size());
     }
 
     public static double[][] restaMatrices(double[][] matrizProbabilidades) {
