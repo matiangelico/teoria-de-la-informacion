@@ -20,8 +20,8 @@ public class Model {
             prob[fila][columna] += 1;
             totales[columna] +=1;
         }
-        for (i = 0; i < 3; i++)
-            for (j = 0; j < 3; j++)
+        for (i = 0; i < n; i++)
+            for (j = 0; j < n; j++)
                 prob[i][j] /= totales[j];
         return prob;
     }
